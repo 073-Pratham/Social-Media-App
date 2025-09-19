@@ -1,13 +1,48 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import './App.css'
 import Home from './components/Home/Home'
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import AuthPage from './components/Auth/AuthPage';
+import { useDispatch } from 'react-redux';
+// import { useSelector } from "react-redux";
+// import type { RootState } from "./redux/store";
+import { setUser } from "./redux/slices/authSlice";
 
 function App() {
+  const dispatch = useDispatch();
+  
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/auth/myprofile`, {
+          method: "GET",
+          credentials: "include" 
+        });
 
+        if (res.ok) {
+          const data = await res.json();
+          dispatch(
+            setUser({
+              id: data.user.id, username: data.user.username, email: data.user.email,
+            })
+          )
+        } 
+      } catch (err) {
+        console.error("Failed to fetch user:", err);
+      }
+    };
+
+    fetchUser();
+  }, []);
+  
   return (
-    <>
-      <Home />
-    </>
+    <Router>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/login" element={<AuthPage />} />
+        {/* {!user && <Route path="/login" element={<AuthPage />} />} */}
+      </Routes>
+    </Router>
   )
 }
 

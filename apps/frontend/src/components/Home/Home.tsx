@@ -10,7 +10,7 @@ export default function Home() {
   const [showTrending, setShowTrending] = useState(false);
 
   return (
-    <Router>
+    <>
       <div className="flex h-screen">
         {/* Menu (hidden on mobile) */}
         <div className="hidden lg:block lg:w-1/5 border-r border-gray-200">
@@ -65,6 +65,6 @@ export default function Home() {
           </button>
         </div>
       </div>
-    </Router>
+    </>
   );
 }

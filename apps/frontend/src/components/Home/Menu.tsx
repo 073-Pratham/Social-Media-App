@@ -7,9 +7,11 @@ import { LuMessageSquareMore } from "react-icons/lu";
 import { CiBookmark } from "react-icons/ci";
 import { CiUser } from "react-icons/ci";
 import { CiSettings } from "react-icons/ci";
+import { MdLogin } from "react-icons/md";
 
 export default function Menu() {
   const {user} = useSelector((state:RootState) => state.auth);
+  
   const [firstLetter, setFirstLetter] = useState(user?.username.length != undefined ? user.username.charAt(0) : "P");
 
   type NavItemProps = {
@@ -27,8 +29,6 @@ export default function Menu() {
 
     )
   };
-
-  console.log(user);
   
   return (
     <div className='h-full flex flex-col justify-between'>
@@ -38,7 +38,10 @@ export default function Menu() {
           <NavItem to="/" icon={<FiHome />} label="Home" />
           <NavItem to="/messages" icon={<LuMessageSquareMore />} label="Messages" />
           <NavItem to="/bookmarks" icon={<CiBookmark />} label="Bookmarks" />
-          <NavItem to="/profile" icon={<CiUser />} label="Profile" />
+          {user ? 
+          <NavItem to="/profile" icon={<CiUser />} label="Profile" /> :
+          <NavItem to="/login" icon={<MdLogin />} label="Login" />
+        }
         </div>
       </div>
       
