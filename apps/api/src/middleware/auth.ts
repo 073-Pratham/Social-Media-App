@@ -1,6 +1,9 @@
 import type { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import prisma from "../prismaClient.js";
+import { RateLimiterRedis } from "rate-limiter-flexible";
+import {Redis} from "ioredis";
+import redisClient from "../utils/radisClient.js";
 
 
 const JWT_SECRET = process.env.JWT_SECRET ?? "dev_secret";
@@ -26,6 +29,23 @@ export const requireAuth = async(req: AuthRequest, res: Response, next: NextFunc
     res.status(401).json({ error: "Invalid token" });
   }
 }
+
+
+const rateLimiter = new RateLimiterRedis({
+  storeClient: redisClient,
+  points: 5, // 5 attempts
+  duration: 60, // per 60 seconds
+});
+
+export const rateLimiterMiddleware = (req: Request, res: Response, next: NextFunction) => {
+  rateLimiter.consume(req.ip)
+    .then(() => {
+      next();
+    })
+    .catch(() => {
+      res.status(429).json({ message: "Too many requests" });
+    });
+};
 
 // export const checkAdmin = async(req: AuthRequest, res: Response, next: NextFunction) => {
 //   const token = req.cookies.token;

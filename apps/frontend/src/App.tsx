@@ -1,12 +1,11 @@
-import { useEffect, useState } from 'react'
-import './App.css'
-import Home from './components/Home/Home'
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import { useEffect } from 'react';
+import './App.css';
+import Home from './components/Home/Home';
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import AuthPage from './components/Auth/AuthPage';
 import { useDispatch } from 'react-redux';
-// import { useSelector } from "react-redux";
-// import type { RootState } from "./redux/store";
 import { setUser } from "./redux/slices/authSlice";
+import PostSection from './components/Home/PostSection';
 
 function App() {
   const dispatch = useDispatch();
@@ -23,9 +22,11 @@ function App() {
           const data = await res.json();
           dispatch(
             setUser({
-              id: data.user.id, username: data.user.username, email: data.user.email,
+              id: data.user.id,
+              username: data.user.username,
+              email: data.user.email,
             })
-          )
+          );
         } 
       } catch (err) {
         console.error("Failed to fetch user:", err);
@@ -33,20 +34,27 @@ function App() {
     };
 
     fetchUser();
-  }, []);
+  }, [dispatch]);
   
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<AuthPage />} />
-        {/* {!user && <Route path="/login" element={<AuthPage />} />} */}
+        {/* Layout route */}
+        <Route path="/" element={<Home />}>
+          <Route index element={<PostSection />} />
+          <Route path="trending" element={<div>Trending topic posts</div>} />
+          <Route path="trending/:topic" element={<div>Trending topic posts</div>} />
+          <Route path="profile" element={<div>User Profile posts</div>} />
+        </Route>
+
+        {/* Auth route */}
+        <Route path="/auth" element={<AuthPage />} />
       </Routes>
     </Router>
   )
 }
 
-export default App
+export default App;
 
 
 // import { useSelector, useDispatch } from "react-redux";

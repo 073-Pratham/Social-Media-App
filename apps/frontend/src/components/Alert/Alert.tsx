@@ -6,11 +6,7 @@ interface propsType {
 }
 
 const Alert = (props: propsType) => {
-  return (
-    <>
-      alert(`Error: ${props.message}`)
-    </>
-  )
+  alert(`Error: ${props.message}`)
 }
 
 export default Alert;

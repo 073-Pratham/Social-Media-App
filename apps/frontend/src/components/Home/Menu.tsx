@@ -12,7 +12,7 @@ import { MdLogin } from "react-icons/md";
 export default function Menu() {
   const {user} = useSelector((state:RootState) => state.auth);
   
-  const [firstLetter, setFirstLetter] = useState(user?.username.length != undefined ? user.username.charAt(0) : "P");
+  const [firstLetter, setFirstLetter] = useState(user?.username.length != undefined ? user.username.charAt(0).toUpperCase() : "P");
 
   type NavItemProps = {
     to: string, 
